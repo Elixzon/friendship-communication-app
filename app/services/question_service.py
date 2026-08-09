@@ -1,5 +1,5 @@
 import random
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from app.data.questions import QUESTIONS
 
@@ -30,36 +30,47 @@ class QuestionService:
     def get_question(
         self,
         session: Dict,
-    ) -> Dict | None:
+    ) -> Optional[Dict]:
         """
         Returns the current question.
         """
 
         questions = session.get("questions", [])
-
         index = session.get("currentQuestion", 0)
 
         if index >= len(questions):
             return None
 
-        return questions[index]
+        question = questions[index]
+
+        return {
+            "id": question["id"],
+            "text": question["text"],
+            "category": question["category"],
+            "index": index,
+            "total": len(questions),
+        }
 
     def next_question(
         self,
         session: Dict,
-    ) -> Dict | None:
+    ) -> Optional[Dict]:
+        """
+        Move to the next question.
+        """
 
         session["currentQuestion"] += 1
-
         return self.get_question(session)
 
     def progress(
         self,
         session: Dict,
     ) -> Dict:
+        """
+        Returns session progress.
+        """
 
         total = len(session.get("questions", []))
-
         current = session.get("currentQuestion", 0)
 
         return {
@@ -67,6 +78,18 @@ class QuestionService:
             "total": total,
             "finished": current >= total,
         }
+
+    def is_finished(
+        self,
+        session: Dict,
+    ) -> bool:
+        """
+        Returns True if all questions have been completed.
+        """
+
+        return session.get("currentQuestion", 0) >= len(
+            session.get("questions", [])
+        )
 
 
 question_service = QuestionService()
