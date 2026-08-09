@@ -8,4 +8,5 @@ pymongo>=4.9.0
 python-dotenv>=1.0.1
 python-multipart>=0.0.9
 websockets>=13.0
-typing-extensions>=4.7.1pydantic-settings
+typing-extensions>=4.7.1
+pydantic-settings
