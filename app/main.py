@@ -62,15 +62,14 @@ async def mongo_exception_handler(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://friendship-communication-app-1.onrender.com",
         "http://127.0.0.1:3000",
         "http://localhost:3000",
+        "https://friendship-communication-app-1.onrender.com",
     ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ============================================================
 # REQUEST LOGGING
