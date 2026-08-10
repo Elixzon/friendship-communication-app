@@ -1,4 +1,5 @@
 import React from 'react';
+import { apiBase } from '../src/api';
 import { useRouter } from 'next/router';
 import { Container } from '../src/components/Layout';
 import Card from '../src/components/Card';
@@ -88,7 +89,7 @@ export default function SessionPage() {
 
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/api/session/${encodeURIComponent(
+                `${apiBase}/api/session/${encodeURIComponent(
                     sessionCode
                 )}/question`
             );
@@ -170,7 +171,7 @@ export default function SessionPage() {
 
         try {
             const response = await fetch(
-                `http://127.0.0.1:8000/api/session/${encodeURIComponent(
+                `${apiBase}/api/session/${encodeURIComponent(
                     sessionCode
                 )}/answer`,
                 {

@@ -22,3 +22,7 @@ __pycache__/
 
 # Logs
 *.log
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/.next/
