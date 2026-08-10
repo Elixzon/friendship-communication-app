@@ -656,6 +656,31 @@ async def question_progress(code: str):
     }
 
 # ============================================================
+# AI INSIGHTS
+# ============================================================
+
+@router.get("/{code}/insights")
+async def get_insights(code: str):
+    code = code.upper()
+
+    session = await session_service.get_session_by_code(code)
+
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail="Session not found",
+        )
+
+    insights = session.get("insights")
+
+    return {
+        "status": "ready" if insights else "processing",
+        "completed": bool(session.get("completed")),
+        "insights": insights,
+    }
+
+
+# ============================================================
 # DELETE SESSION
 # ============================================================
 

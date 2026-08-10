@@ -35,6 +35,17 @@ export default function SessionPage() {
     const [finished, setFinished] = React.useState(false);
     const [error, setError] = React.useState<string | null>(null);
 
+    const [insights, setInsights] = React.useState<{
+        shared_strengths: string[];
+        hidden_appreciation: string[];
+        communication_gaps: string[];
+        emotional_patterns: string[];
+        conversation_prompts: string[];
+        growth_suggestions: string[];
+    } | null>(null);
+
+    const [loadingInsights, setLoadingInsights] = React.useState(false);
+
     /*
      * IMPORTANT:
      * Your participant ID is stored by the invite flow.
@@ -211,6 +222,50 @@ export default function SessionPage() {
         }
     };
 
+    const loadInsights = React.useCallback(async () => {
+        if (!sessionCode) return;
+
+        setLoadingInsights(true);
+
+        try {
+            const response = await fetch(
+                `${apiBase}/api/session/${encodeURIComponent(
+                    sessionCode
+                )}/insights`
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data?.detail || 'Failed to load AI insights'
+                );
+            }
+
+            if (data.insights) {
+                setInsights(data.insights);
+            }
+        } catch (err) {
+            console.error('Failed to load AI insights:', err);
+        } finally {
+            setLoadingInsights(false);
+        }
+    }, [sessionCode]);
+
+    React.useEffect(() => {
+        if (!finished || !sessionCode) return;
+
+        loadInsights();
+
+        const interval = window.setInterval(() => {
+            loadInsights();
+        }, 2500);
+
+        return () => {
+            window.clearInterval(interval);
+        };
+    }, [finished, sessionCode, loadInsights]);
+
     const leaveSession = () => {
         reset();
         router.replace('/');
@@ -361,25 +416,167 @@ export default function SessionPage() {
                     </Card>
                 )}
 
-                {/* FINISHED */}
+                {/* AI INSIGHTS */}
                 {finished && (
-                    <Card>
-                        <div className="py-10 text-center">
-                            <div className="text-5xl mb-4">
-                                ❤️
+                    <>
+                        <Card>
+                            <div className="py-10 text-center">
+                                <div className="text-5xl mb-4">
+                                    ❤️
+                                </div>
+
+                                <h2 className="text-2xl font-semibold mb-3">
+                                    You&apos;ve both finished.
+                                </h2>
+
+                                <p className="text-gray-600">
+                                    Your private answers are being analyzed
+                                    to understand what this friendship may
+                                    be leaving unspoken.
+                                </p>
                             </div>
+                        </Card>
 
-                            <h2 className="text-2xl font-semibold mb-3">
-                                You&apos;ve both finished.
-                            </h2>
+                        {loadingInsights && !insights && (
+                            <Card>
+                                <div className="py-8 text-center">
+                                    <div className="text-3xl mb-3">
+                                        🧠
+                                    </div>
 
-                            <p className="text-gray-600">
-                                Your private answers are being used to
-                                understand what this friendship may be
-                                leaving unspoken.
-                            </p>
-                        </div>
-                    </Card>
+                                    <h3 className="text-lg font-semibold mb-2">
+                                        Analyzing your friendship...
+                                    </h3>
+
+                                    <p className="text-gray-500">
+                                        Comparing both sets of answers
+                                        privately. This may take a few
+                                        seconds.
+                                    </p>
+                                </div>
+                            </Card>
+                        )}
+
+                        {insights && (
+                            <div className="space-y-4 mt-4">
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        💪 Shared strengths
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.shared_strengths.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        💗 Hidden appreciation
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.hidden_appreciation.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        💬 Communication gaps
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.communication_gaps.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        🫶 Emotional patterns
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.emotional_patterns.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        🗣️ Conversation prompts
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.conversation_prompts.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                                <Card>
+                                    <h3 className="text-xl font-semibold mb-4">
+                                        🌱 Growth suggestions
+                                    </h3>
+
+                                    <ul className="space-y-3">
+                                        {insights.growth_suggestions.map(
+                                            (item, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="rounded-lg bg-gray-50 p-4 text-gray-700"
+                                                >
+                                                    {item}
+                                                </li>
+                                            )
+                                        )}
+                                    </ul>
+                                </Card>
+
+                            </div>
+                        )}
+                    </>
                 )}
 
                 {/* LEAVE */}
