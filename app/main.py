@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pymongo.errors import PyMongoError
 
-from .routes import session_routes
+from .routes import session_routes, admin_routes
 from .websocket import routes as ws_routes
 from .database import (
     ensure_indexes,
@@ -64,6 +64,8 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:3000",
         "http://localhost:3000",
+        "http://127.0.0.1:3001",
+        "http://localhost:3001",
         "https://friendship-communication-app-1.onrender.com",
     ],
     allow_credentials=False,
@@ -111,6 +113,7 @@ async def log_requests(request: Request, call_next):
 # ============================================================
 
 app.include_router(session_routes.router)
+app.include_router(admin_routes.router)
 app.include_router(ws_routes.router)
 
 
