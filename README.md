@@ -2,7 +2,7 @@
 
 **FriendLink** is a web application designed to help people strengthen friendships, improve communication, and reflect on their relationships. It aims to make meaningful connections easier through interactive features and AI-powered friendship insights.
 
-🌐 **Live Demo:** [Add your Render deployment URL here]
+🌐 **Live Demo:** https://friendship-communication-app-1.onrender.com
 
 📂 **Repository:** [FriendLink on GitHub](https://github.com/Elixzon/friendship-communication-app)
 
